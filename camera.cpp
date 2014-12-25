@@ -65,7 +65,7 @@ void DSCamera::setResolution(int res) {
 	}
 }
 
-QSize& DSCamera::size() {
+QSize& DSCamera::size() const {
 	int W, H;
 	CameraGetImageSize(&W, &H);
 	m_size = QSize(W, H);

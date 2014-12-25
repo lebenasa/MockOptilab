@@ -21,7 +21,7 @@ public:
 public slots:
 	virtual void setResolution(int res) = 0;
 
-	virtual QSize& size() = 0;
+	virtual QSize& size() const = 0;
 
 	virtual void capture(int resolution, const QString &fileName) = 0;
 
@@ -56,7 +56,7 @@ public:
 public slots:
 	void setResolution(int res) override;
 
-	QSize& size();
+	QSize& size() const;
 
 	void capture(int resolution, const QString &fileName);
 
@@ -80,7 +80,7 @@ public:
 public slots:
     void setResolution(int res) { Q_UNUSED(res) }
 
-    QSize& size() { return QSize(1280, 1024); }
+    QSize& size() const { return QSize{1280, 1024}; }
 
     void capture(int resolution, const QString &fileName);
     

@@ -67,6 +67,30 @@ protected:
 	void deinitialize();
 };
 
+class MockCamera : public Camera
+{
+    Q_OBJECT
+    QImage m_buffer;
+    QTimer* emitter;
+    int state;
+public:
+	MockCamera(QObject *parent = 0);
+	~MockCamera();
+
+public slots:
+    void setResolution(int res) { Q_UNUSED(res) }
+
+    QSize& size() { return QSize(1280, 1024); }
+
+    void capture(int resolution, const QString &fileName);
+    
+    void imageProc();
+
+protected:
+    void initialize() { }
+    void deinitialize() { }
+};
+
 /*
 QuickCam - QQuickItem to render camera stream
 - Image stream is stretched, aspect ratio calculation is done elsewhere

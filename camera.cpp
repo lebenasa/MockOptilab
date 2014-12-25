@@ -4,7 +4,7 @@
 #include <qsgsimpletexturenode.h>
 #include <qquickwindow.h>
 
-#include "DSCAMAPI.h"
+//#include "DSCAMAPI.h"
 #include "opencv2\opencv.hpp"
 
 //Useful macro for error checking
@@ -103,6 +103,37 @@ void DSCamera::initialize() {
 void DSCamera::deinitialize() {
 	CameraStop();
 	CameraUnInit();
+}
+
+//MockCamera implementation
+MockCamera::MockCamera(QObject *parent)
+    : Camera(parent), state(0), m_buffer(size(), QImage::Format_RGB888)
+{
+    m_buffer.fill(qRgb(0, 0, 0));
+    emitter = new QTimer(this);
+    emitter->setInterval(1000/30);
+    connect(emitter, &QTimer::timeout, this, &MockCamera::imageProc);
+    emitter->start();
+}
+
+MockCamera::~MockCamera()
+{
+    
+}
+
+void MockCamera::capture(int resolution, const QString &fileName) {
+    Q_UNUSED(resolution)
+    Q_UNUSED(fileName)
+}
+
+void MockCamera::imageProc() {
+    auto rgb = QColor::fromHsv(state, 255, 255);
+    m_buffer.fill(rgb);
+    emit frameReady(m_buffer);
+    if (state >= 359)
+        state = 0;
+    else
+        ++state;
 }
 
 //QuickCam implementation

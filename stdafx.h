@@ -1,3 +1,4 @@
+#include <QtCore>
 #include <QtGui>
 
 #include <iostream>
@@ -10,11 +11,11 @@
 #include <functional>
 #include <memory>
 
-#define NOMINMAX
-#include <Windows.h>
-#include <atlstr.h>
+//#define NOMINMAX
+//#include <Windows.h>
+//#include <atlstr.h>
 
-#define WIN32_LEAN_AND_MEAN
-#include <windowsx.h>
-#include <commctrl.h>
-#include <tchar.h>
+//#define WIN32_LEAN_AND_MEAN
+//#include <windowsx.h>
+//#include <commctrl.h>
+//#include <tchar.h>

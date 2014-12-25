@@ -101,6 +101,10 @@ void Stepper::addWaitLimitCommand(int code, int movement) {
 	}
 }
 
+enum Movement {
+	Idle, Up, Right, Down, Left, ZUp, ZDown, UpRight, DownRight, DownLeft, UpLeft
+};
+
 // MockStepper
 MockStepper::MockStepper(QObject* parent)
 	: Stepper(parent), m_z(0), movementCode(Idle), m_bufferSize(14),

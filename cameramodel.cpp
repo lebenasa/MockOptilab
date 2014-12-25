@@ -14,6 +14,7 @@ CameraModel::~CameraModel()
 }
 
 int CameraModel::rowCount(const QModelIndex& parent) const {
+    Q_UNUSED(parent)
 	return m_row * m_col;
 }
 

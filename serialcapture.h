@@ -5,8 +5,8 @@
 #include "qqmlapplicationengine.h"
 #include "qqmlcontext.h"
 
-class DSCamera;
-class Stepper;
+class MockCamera;
+class MockStepper;
 class CameraModel;
 class SMInterface;
 
@@ -40,8 +40,8 @@ signals:
 	void blockChanged(bool);
 
 private:
-	DSCamera* m_camera;
-	Stepper* m_stepper;
+	MockCamera* m_camera;
+	MockStepper* m_stepper;
 	CameraModel* m_model;
 	SMInterface* m_interface;
 	QQmlApplicationEngine engine;

@@ -10,7 +10,7 @@ SerialCapture::SerialCapture(QObject *parent)
 	: QObject(parent), engine{ this }, m_zoom(10), m_block(false)
 {
 	// Initialize
-	m_camera = new DSCamera(this);
+	m_camera = new MockCamera(this);
 	m_stepper = new MockStepper(this);
 	m_interface = new SMInterface(0, this);
 	m_model = new CameraModel(m_interface->rows(), m_interface->cols(), this);
@@ -21,7 +21,7 @@ SerialCapture::SerialCapture(QObject *parent)
 	// Connections
 	connect(m_stepper, &Stepper::xyChanged, m_interface, &SMInterface::updatePos);
 	connect(m_stepper, &Stepper::bufferFull, this, &SerialCapture::unblockStream);
-	connect(m_camera, &DSCamera::frameReady, this, &SerialCapture::redirectImage);
+	connect(m_camera, &MockCamera::frameReady, this, &SerialCapture::redirectImage);
 	connect(m_interface, &SMInterface::stepperMoveTo, m_stepper, &Stepper::moveTo);
 }
 

@@ -39,7 +39,7 @@ public:
 	virtual int bufferFree() = 0;
 	virtual int bufferSize() = 0;
 
-	virtual bool limitAt(int id) { return false; }
+	virtual bool limitAt(int id) { Q_UNUSED(id); return false; }
 
 	bool limit0() { return limitAt(0); }
 	bool limit1() { return limitAt(1); }
@@ -111,59 +111,6 @@ protected:
 
 private:
 	bool m_working;
-};
-
-/*
-CNCStepper - Stepper implementation using CNC API
-*/
-class CNCStepper : public Stepper
-{
-	Q_OBJECT
-	double m_x, m_y, m_z;
-	long m_output, m_bufferFree, m_bufferSize, m_jog;
-	std::bitset<8> m_limit;
-	int movementCode;
-	bool m_isActive = false;
-	QTimer* statusUpdater;
-public:
-	CNCStepper(QObject* parent = 0);
-	~CNCStepper();
-
-	double x() { return m_x; }
-	double y() { return m_y; }
-	double z() { return m_z; }
-	int output() { return m_output; }
-	int bufferFree() { return m_bufferFree; }
-	int bufferSize() { return m_bufferSize; }
-	int jog() { return m_jog; }
-
-	bool limitAt(int id) override { return m_limit.at(id); }
-	bool isActive() { return m_isActive; }
-
-public slots:
-	void jogUp();
-	void jogRight();
-	void jogDown();
-	void jogLeft();
-	void jogZUp();
-	void jogZDown();
-	void jogUR();
-	void jogDR();
-	void jogDL();
-	void jogUL();
-	void stop(int);
-
-	void moveX(double);
-	void moveY(double);
-	void moveZ(double);
-
-	void moveTo(const QPointF& npos);
-
-	void updateStatus();
-
-protected:
-	bool init();
-	void deinit();
 };
 
 /*

@@ -34,39 +34,6 @@ protected:
 	virtual void deinitialize() = 0;
 };
 
-/*
-DSCamera - implementation of Camera using MSHOT API
-Camera control (brightness, saturation, etc) is handled elsewhere
-*/
-
-class DSCamera : public Camera
-{
-	Q_OBJECT
-	int m_resolution;
-	bool m_available = false;
-	QSize m_size;
-	QImage m_buffer;
-
-public:
-	DSCamera(QObject *parent = 0);
-	~DSCamera();
-
-	void imageProc(BYTE* pBuffer);
-
-public slots:
-	void setResolution(int res) override;
-
-	QSize& size() const;
-
-	void capture(int resolution, const QString &fileName);
-
-	bool isAvailable() { return m_available; }
-
-protected:
-	void initialize();
-	void deinitialize();
-};
-
 class MockCamera : public Camera
 {
     Q_OBJECT
@@ -80,7 +47,7 @@ public:
 public slots:
     void setResolution(int res) { Q_UNUSED(res) }
 
-    QSize& size() const { return QSize{1280, 1024}; }
+    QSize& size() const { return m_buffer.size(); }
 
     void capture(int resolution, const QString &fileName);
     

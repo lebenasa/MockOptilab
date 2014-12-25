@@ -1,5 +1,7 @@
 #include <QtCore>
 #include <QtGui>
+#include <QImage>
+#include <QSize>
 
 #include <iostream>
 #include <chrono>

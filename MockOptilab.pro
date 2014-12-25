@@ -2,6 +2,8 @@ TEMPLATE = app
 
 QT += qml quick widgets core gui
 
+PRECOMPILED_HEADER = stdafx.h
+
 SOURCES += main.cpp \
     camera.cpp \
     cameramodel.cpp \

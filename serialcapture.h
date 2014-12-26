@@ -15,6 +15,7 @@ class SerialCapture : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QSize cellSize READ cellSize NOTIFY cellSizeChanged)
 	Q_PROPERTY(bool block MEMBER m_block NOTIFY blockChanged)
+    Q_PROPERTY(int selectCounter MEMBER selectCounter NOTIFY selectCounterChanged)
 	
 public:
 	SerialCapture(QObject *parent = 0);
@@ -44,6 +45,7 @@ public slots:
 signals:
 	void cellSizeChanged(const QSize &size);
 	void blockChanged(bool);
+    void selectCounterChanged(int nv);
 
 private:
 	MockCamera* m_camera;
@@ -58,6 +60,7 @@ private:
 	bool m_block;
     
     QPoint lastHighlight, select1;
+    int selectCounter = 0;
 };
 
 #endif // SERIALCAPTURE_H

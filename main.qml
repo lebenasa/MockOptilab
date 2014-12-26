@@ -23,6 +23,7 @@ ApplicationWindow {
             MenuItem {
                 text: qsTr("Move")
                 onTriggered: serialcapture.moveToSelected()
+                enabled: (serialcapture.selectCounter === 1)
             }
         }
     }

@@ -37,6 +37,9 @@ public slots:
     
     void procSelect(const QPoint& pos);
     void procHighlight(const QPoint& pos);
+    
+    void beginMultiSelect(const QPoint& pos);
+    void endMultiSelect(const QPoint& pos);
 
 signals:
 	void cellSizeChanged(const QSize &size);
@@ -54,7 +57,7 @@ private:
 	int m_zoom;
 	bool m_block;
     
-    QPoint lastHighlight;
+    QPoint lastHighlight, select1;
 };
 
 #endif // SERIALCAPTURE_H

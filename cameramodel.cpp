@@ -80,14 +80,21 @@ void CameraModel::initModel(int row, int col) {
 	endRemoveRows();
 	
 	beginInsertRows(index, 0, row * col);
+    
 	m_selected = vector<bool>(row * col);
 	fill(begin(m_selected), end(m_selected), false);
+    
 	m_hasImage = vector<bool>(row * col);
 	fill(begin(m_hasImage), end(m_hasImage), false);
+    
     m_highlight = vector<bool>(row * col);
     fill(begin(m_highlight), end(m_highlight), false);
+    
 	m_buffer = vector<QImage>(row * col);
-	fill(begin(m_buffer), end(m_buffer), QImage(10, 10, QImage::Format_RGB888));
+    auto im = QImage(10, 10, QImage::Format_RGB888);
+    im.fill(qRgb(55, 55, 55));
+	fill(begin(m_buffer), end(m_buffer), im);
+    
 	endInsertRows();
 
 	m_row = row;
@@ -169,6 +176,7 @@ std::vector<QPoint> CameraModel::autoFill() const {
 	int first = distance(begin(m_hasImage), first_i);
 	auto last_i = find(rbegin(m_hasImage), rend(m_hasImage), true);
 	int last = distance(begin(m_hasImage), last_i.base());
+    // WRONG!!
 
 	// Calculate cells in the box
 	auto tl = indexToPoint(first);
@@ -185,13 +193,14 @@ std::vector<QPoint> CameraModel::autoFill() const {
 	return res;
 }
 
-std::vector<QPoint> CameraModel::boxFill() const {
-	// Selection is already restricted to box area by UI,
-	// thus we simply return selected cells with empty image
+std::vector<QPoint> CameraModel::boxFill(const QPoint &tl, const QPoint &br) const {
 	std::vector<QPoint> res;
-	for (size_t i = 0; i < m_selected.size(); ++i) {
-		if (m_selected.at(i) && !m_hasImage.at(i))
-			res.push_back(indexToPoint(i));
+    for (int y = tl.y(); y <= br.y(); ++y) {
+		for (int x = tl.x(); x <= br.x(); ++x) {
+			if (!m_hasImage[pointToIndex(QPoint(x, y))]) {
+				res.push_back(QPoint(x, y));
+			}
+		}
 	}
 	return res;
 }

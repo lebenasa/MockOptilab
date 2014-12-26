@@ -15,8 +15,8 @@ class Camera : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QSize sourceSize READ size NOTIFY sourceSizeChanged)
 public:
-	Camera(QObject *parent = 0) : QObject(parent) { }
-	~Camera() { }
+	Camera(QObject *parent = 0);
+	virtual ~Camera();
 
 public slots:
 	virtual void setResolution(int res) = 0;

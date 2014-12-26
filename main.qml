@@ -8,6 +8,7 @@ ApplicationWindow {
     width: 1280
     height: 720
     title: qsTr("Hello World")
+    visibility: "Maximized"
 
     menuBar: MenuBar {
         Menu {
@@ -28,9 +29,7 @@ ApplicationWindow {
     
     statusBar: StatusBar {
         RowLayout {
-            Label {
-                text: "(%1x%2)".arg(stepper.x).arg(stepper.y)
-            }
+            Label { text: "(%1x%2)".arg(stepper.x).arg(stepper.y) }
         }
     }
     
@@ -53,12 +52,12 @@ ApplicationWindow {
                     width: cameraGrid.cellWidth
                     height: cameraGrid.cellHeight
                     color: "transparent"
-                    border.width: 1
-                    border.color: selected ? "yellow" : highlight ? "magenta" : "green"
+                    border.width: (selected | highlight) ? 2 : 1
+                    border.color: selected ? "yellow" : highlight ? "magenta" : "gray"
                     CameraItem {
                         id: cameraDelegate
                         anchors.fill: parent
-                        anchors.margins: 1
+                        anchors.margins: (selected | highlight) ? 2 : 1
                         blocked: false
                         source: buffer
                         renderParams: CameraItem.ScaledToItem
@@ -72,12 +71,17 @@ ApplicationWindow {
                 property int mousecount: 0
                 onPositionChanged: {
                     if (mousecount === 15) {
-                       serialcapture.procHighlight(Qt.point(mouse.x, mouse.y))
-                       mousecount = 0
+                        if (pressed)
+                            serialcapture.endMultiSelect(Qt.point(mouse.x, mouse.y))
+                        else
+                            serialcapture.procHighlight(Qt.point(mouse.x, mouse.y))
+                        mousecount = 0
                     }
                     ++mousecount
                 }
-                onClicked: serialcapture.procSelect(Qt.point(mouse.x, mouse.y))
+//                onClicked: serialcapture.procSelect(Qt.point(mouse.x, mouse.y))
+                onPressed: serialcapture.beginMultiSelect(Qt.point(mouse.x, mouse.y))
+                onReleased: serialcapture.endMultiSelect(Qt.point(mouse.x, mouse.y))
             }
         }
     }

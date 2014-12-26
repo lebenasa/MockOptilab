@@ -112,3 +112,23 @@ void SerialCapture::procHighlight(const QPoint &pos) {
         lastHighlight = index;
     }
 }
+
+void SerialCapture::beginMultiSelect(const QPoint &pos) {
+    int col = pos.x() / m_size.width();
+    int row = pos.y() / m_size.height();
+    select1 = QPoint(col, row);
+}
+
+void SerialCapture::endMultiSelect(const QPoint &pos) {
+    m_model->clearSelection();
+    int col = pos.x() / m_size.width();
+    int row = pos.y() / m_size.height();
+    auto select2 = QPoint(col, row);
+    int tlx = (select1.x() < select2.x()) ? select1.x() : select2.x();
+    int tly = (select1.y() < select2.y()) ? select1.y() : select2.y();
+    int brx = (select1.x() > select2.x()) ? select1.x() : select2.x();
+    int bry = (select1.y() > select2.y()) ? select1.y() : select2.y();
+    auto toSelect = m_model->boxFill(QPoint(tlx, tly), QPoint(brx, bry));
+    for (const auto& select : toSelect)
+        m_model->select(select);
+}

@@ -6,13 +6,24 @@
 
 #include "opencv2\opencv.hpp"
 
+Camera::Camera(QObject *parent)
+    : QObject(parent)
+{
+    
+}
+
+Camera::~Camera()
+{
+    
+}
+
 //MockCamera implementation
 MockCamera::MockCamera(QObject *parent)
     : Camera(parent), state(0), m_buffer(QSize(1280, 1024), QImage::Format_RGB888)
 {
     m_buffer.fill(qRgb(0, 255, 0));
     emitter = new QTimer(this);
-    emitter->setInterval(1000/30);
+    emitter->setInterval(1000/10);
     connect(emitter, &QTimer::timeout, this, &MockCamera::imageProc);
     emitter->start();
 }
@@ -29,19 +40,19 @@ void MockCamera::capture(int resolution, const QString &fileName) {
 
 void MockCamera::imageProc() {
     auto rgb = QColor::fromHsv(state, 255, 255);
-    m_buffer.fill(rgb);
+//    m_buffer.fill(rgb);
     emit frameReady(m_buffer);
-    if (state >= 359)
+    if (state >= 355)
         state = 0;
     else
-        ++state;
+        state += 5;
 }
 
 //QuickCam implementation
 QuickCam::QuickCam(QQuickItem* parent)
 	: QQuickItem(parent), m_frame(QSize(10, 10), QImage::Format_RGB888), m_blocked(false)
 {
-	m_frame.fill(Qt::black);
+	m_frame.fill(Qt::white);
 	renderParams = OriginalSize;
 	setFlag(QQuickItem::ItemHasContents, true);
 }
@@ -68,11 +79,14 @@ QImage QuickCam::currentFrame() const {
 void QuickCam::updateImage(const QImage &frame) {
 	if (!m_blocked) {
 		auto src = frame;
+        int w = (width() > 0) ? width() : src.width() / 10;
+        int h = (height() > 0) ? height() : src.height() / 10;
 		if (renderParams == ScaledToItem)
-			src = src.scaled(QSize(width(), height()));
+			m_frame = src.scaled(QSize(w, h));
 		else if (renderParams == Halved)
-			src = src.scaled(QSize(src.width() / 2, src.height() / 2));
-		m_frame = src;
+			m_frame = src.scaled(QSize(src.width() / 2, src.height() / 2));
+        else
+            m_frame = src;
 	}
 	update();
 	emit sourceChanged(m_frame);

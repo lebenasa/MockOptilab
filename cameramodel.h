@@ -37,7 +37,7 @@ public:
 	// Get empty cell index based on filled cell position
 	std::vector<QPoint> autoFill() const;
 	// Fill empty cell from selected range
-	std::vector<QPoint> boxFill() const;
+	std::vector<QPoint> boxFill(const QPoint& tl, const QPoint& br) const;
 
 public slots:
 	// Client calculate correct row and column, size is cell size in pixel

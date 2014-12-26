@@ -146,6 +146,14 @@ void CameraModel::select(const QPoint& target) {
 	emit dataChanged(mi, mi, { SelectedRole });
 }
 
+void CameraModel::multiselect(const QPoint &tl, const QPoint &br) {
+    for (int y = tl.y(); y <= br.y(); ++y) {
+		for (int x = tl.x(); x <= br.x(); ++x) {
+			select(QPoint(x, y));
+		}
+	}
+}
+
 void CameraModel::highlight(const QPoint &target) {
     auto index = pointToIndex(target);
     m_highlight[index] = true;
@@ -193,14 +201,17 @@ std::vector<QPoint> CameraModel::autoFill() const {
 	return res;
 }
 
-std::vector<QPoint> CameraModel::boxFill(const QPoint &tl, const QPoint &br) const {
+std::vector<QPoint> CameraModel::boxFill() const {
+    // Selection is already restricted to box area by UI,
+    // thus we simply return selected cells with empty image
 	std::vector<QPoint> res;
-    for (int y = tl.y(); y <= br.y(); ++y) {
-		for (int x = tl.x(); x <= br.x(); ++x) {
-			if (!m_hasImage[pointToIndex(QPoint(x, y))]) {
-				res.push_back(QPoint(x, y));
-			}
-		}
-	}
+    for (size_t i = 0; i < m_selected.size(); ++i) {
+            if (m_selected.at(i) && !m_hasImage.at(i))
+                res.push_back(indexToPoint(i));
+    }
 	return res;
+}
+
+int CameraModel::selectedCount() {
+    return count(begin(m_selected), end(m_selected), true);
 }

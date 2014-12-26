@@ -128,7 +128,5 @@ void SerialCapture::endMultiSelect(const QPoint &pos) {
     int tly = (select1.y() < select2.y()) ? select1.y() : select2.y();
     int brx = (select1.x() > select2.x()) ? select1.x() : select2.x();
     int bry = (select1.y() > select2.y()) ? select1.y() : select2.y();
-    auto toSelect = m_model->boxFill(QPoint(tlx, tly), QPoint(brx, bry));
-    for (const auto& select : toSelect)
-        m_model->select(select);
+    m_model->multiselect(QPoint(tlx, tly), QPoint(brx, bry));
 }

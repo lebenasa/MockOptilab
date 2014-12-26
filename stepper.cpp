@@ -57,10 +57,12 @@ void Stepper::addCommand(Command cmd) {
 //Call this function to start all command sequence
 void Stepper::nextCommand() {
 	disconnect(this, &Stepper::bufferFull, this, &Stepper::nextCommand);
-	auto cmd = commandPool.front();
-	cmd();
-	commandPool.pop();
-	connect(this, &Stepper::bufferFull, this, &Stepper::nextCommand);
+    if (!commandPool.empty()) {
+        auto cmd = commandPool.front();
+        cmd();
+        commandPool.pop();
+    }
+    connect(this, &Stepper::bufferFull, this, &Stepper::nextCommand);
 }
 
 //Convenient functions
@@ -107,7 +109,7 @@ void Stepper::addWaitLimitCommand(int code, int movement) {
 
 void Stepper::addBlockCommand(int msecond) {
     auto cmd = [=]() {
-        QTimer::singleShot(msecond, Qt::PreciseTimer, this, &Stepper::nextCommand);
+        QTimer::singleShot(msecond, this, SLOT(nextCommand()));
     };
     addCommand(cmd);
 }

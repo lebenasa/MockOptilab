@@ -132,3 +132,15 @@ void SerialCapture::endMultiSelect(const QPoint &pos) {
     selectCounter = m_model->selectedCount();
     emit selectCounterChanged(selectCounter);
 }
+
+void SerialCapture::boxFill() {
+    auto ts = m_model->boxFill();
+    vector<QPointF> targets;
+    for (const auto& t : ts)
+        targets.push_back(m_interface->indexToCoord(t));
+    for (auto f = begin(targets); f != end(targets); ++f) {
+        m_stepper->addMoveToCommand(*f);
+        m_stepper->addBlockCommand(100);
+    }
+    m_stepper->nextCommand();
+}

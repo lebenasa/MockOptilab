@@ -41,6 +41,8 @@ public slots:
     
     void beginMultiSelect(const QPoint& pos);
     void endMultiSelect(const QPoint& pos);
+    
+    void boxFill();
 
 signals:
 	void cellSizeChanged(const QSize &size);

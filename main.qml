@@ -25,6 +25,11 @@ ApplicationWindow {
                 onTriggered: serialcapture.moveToSelected()
                 enabled: (serialcapture.selectCounter === 1)
             }
+            MenuItem {
+                text: qsTr("Fill")
+                onTriggered: serialcapture.boxFill()
+                enabled: (serialcapture.selectCounter > 1)
+            }
         }
     }
     

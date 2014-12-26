@@ -46,7 +46,7 @@ void SerialCapture::unblockStream() {
 }
 
 void SerialCapture::redirectImage(const QImage& img) {
-	if (!m_block && !m_stepper->isWorking())
+	if (!m_stepper->isWorking())
 		m_model->updateBuffer(img, m_interface->currentPos());
 }
 

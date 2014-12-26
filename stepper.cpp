@@ -78,6 +78,10 @@ void Stepper::addMoveCommand(int code, double dist) {
 	}
 }
 
+void Stepper::addMoveToCommand(const QPointF &target) {
+    addCommand([=]() { moveTo(target); });
+}
+
 //Currently only support code 2 (X Axis) and code 0 (Y Axis)
 void Stepper::addWaitLimitCommand(int code, int movement) {
     Q_UNUSED(movement)
@@ -99,6 +103,13 @@ void Stepper::addWaitLimitCommand(int code, int movement) {
 		addCommand(cmd1);
 		addCommand(cmd2);
 	}
+}
+
+void Stepper::addBlockCommand(int msecond) {
+    auto cmd = [=]() {
+        QTimer::singleShot(msecond, Qt::PreciseTimer, this, &Stepper::nextCommand);
+    };
+    addCommand(cmd);
 }
 
 enum Movement {

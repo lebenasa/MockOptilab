@@ -83,7 +83,9 @@ public slots:
 	void nextCommand();
 
 	void addMoveCommand(int code, double dist);
+    void addMoveToCommand(const QPointF& target);
 	void addWaitLimitCommand(int code, int movement);
+    void addBlockCommand(int msecond);
 
 signals:
 	void xChanged(double x);

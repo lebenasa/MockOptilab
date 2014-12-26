@@ -40,7 +40,7 @@ void MockCamera::capture(int resolution, const QString &fileName) {
 
 void MockCamera::imageProc() {
     auto rgb = QColor::fromHsv(state, 255, 255);
-//    m_buffer.fill(rgb);
+    m_buffer.fill(rgb);
     emit frameReady(m_buffer);
     if (state >= 355)
         state = 0;

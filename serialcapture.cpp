@@ -16,7 +16,8 @@ SerialCapture::SerialCapture(QObject *parent)
 	m_model = new CameraModel(m_interface->rows(), m_interface->cols(), this);
 	qmlRegisterType<QuickCam>("QuickCam", 1, 0, "CameraItem");
 
-	m_size = m_camera->size() / m_zoom;
+	auto sz = m_camera->size();
+    m_size = QSize(sz.width() / m_zoom, sz.height() / m_zoom);
 
 	// Connections
 	connect(m_stepper, &Stepper::xyChanged, m_interface, &SMInterface::updatePos);
@@ -88,7 +89,7 @@ void SerialCapture::show() {
 	rootContext->setContextProperty("cammodel", m_model);
 	rootContext->setContextProperty("istep", m_interface);
 	auto now = std::chrono::steady_clock::now();
-	engine.load(QUrl(QStringLiteral("qrc:///Resources/SerialCapture/SerialCapture.qml")));
+	engine.load(QUrl(QStringLiteral("qrc:///main.qml")));
 	auto then = std::chrono::steady_clock::now();
 	auto diff = then - now;
 	qDebug() << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(diff).count() << " ms";

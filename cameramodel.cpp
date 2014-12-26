@@ -39,6 +39,7 @@ bool CameraModel::setData(const QModelIndex & index, const QVariant & value, int
 }
 
 Qt::ItemFlags CameraModel::flags(const QModelIndex& index) const {
+    Q_UNUSED(index)
 	return Qt::ItemIsEditable;
 }
 
@@ -111,6 +112,7 @@ void CameraModel::updateBuffer(const QImage& buffer, const QPoint& target) {
 
 void CameraModel::saveBuffers(const QString& baseDir) {
 	// We'll implement this later
+    baseDir;
 }
 
 void CameraModel::clearSelection() {

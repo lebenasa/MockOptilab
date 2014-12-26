@@ -8,7 +8,7 @@
 
 //MockCamera implementation
 MockCamera::MockCamera(QObject *parent)
-    : Camera(parent), state(0), m_buffer(size(), QImage::Format_RGB888)
+    : Camera(parent), state(0), m_buffer(QSize(1280, 1024), QImage::Format_RGB888)
 {
     m_buffer.fill(qRgb(0, 0, 0));
     emitter = new QTimer(this);

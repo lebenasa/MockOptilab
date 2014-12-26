@@ -10,7 +10,7 @@
 MockCamera::MockCamera(QObject *parent)
     : Camera(parent), state(0), m_buffer(QSize(1280, 1024), QImage::Format_RGB888)
 {
-    m_buffer.fill(qRgb(0, 0, 0));
+    m_buffer.fill(qRgb(0, 255, 0));
     emitter = new QTimer(this);
     emitter->setInterval(1000/30);
     connect(emitter, &QTimer::timeout, this, &MockCamera::imageProc);

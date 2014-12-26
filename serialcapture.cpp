@@ -94,3 +94,21 @@ void SerialCapture::show() {
 	auto diff = then - now;
 	qDebug() << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(diff).count() << " ms";
 }
+
+void SerialCapture::procSelect(const QPoint &pos) {
+    m_model->clearSelection();
+    int col = pos.x() / m_size.width();
+    int row = pos.y() / m_size.height();
+    m_model->select(QPoint(col, row));
+}
+
+void SerialCapture::procHighlight(const QPoint &pos) {
+    int col = pos.x() / m_size.width();
+    int row = pos.y() / m_size.height();
+    QPoint index{ col, row };
+    if (index != lastHighlight) {
+        m_model->unhighlight();
+        m_model->highlight(QPoint(col, row));
+        lastHighlight = index;
+    }
+}

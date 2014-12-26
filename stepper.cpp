@@ -123,8 +123,8 @@ void MockStepper::updateStatus() {
 	auto incr = [](const double &now, const double &target) -> double {
 		double res = now;
 		if (target > now)
-			return res + .01;
-		return res - .01;
+			return res + .5;
+		return res - .5;
 	};
 	if (m_target != m_pos) {
 		if (m_target.x() != m_pos.x()) {

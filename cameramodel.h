@@ -9,12 +9,13 @@ class CameraModel : public QAbstractListModel
 	Q_PROPERTY(int rows READ rows NOTIFY rowsChanged)
 	Q_PROPERTY(int cols READ cols NOTIFY colsChanged)
 	int m_row, m_col;
-	std::vector<bool> m_selected, m_hasImage;
+	std::vector<bool> m_selected, m_hasImage, m_highlight;
 	std::vector<QImage> m_buffer;
 public:
 	enum CameraRole {
 		BufferRole = Qt::UserRole + 1,
-		SelectedRole
+		SelectedRole,
+        HighlightRole
 	};
 	CameraModel(int row, int col, QObject *parent = 0);
 	~CameraModel();
@@ -55,6 +56,10 @@ public slots:
 	void clearSelection();
 	// Select a cell
 	void select(const QPoint &index);
+    
+    // Highlight a cell
+    void highlight(const QPoint& index);
+    void unhighlight();
 
 protected:
 	QHash<int, QByteArray> roleNames() const;

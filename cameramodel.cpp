@@ -25,6 +25,8 @@ QVariant CameraModel::data(const QModelIndex& index, int role) const {
 		return m_buffer.at(index.row());
 	else if (role == SelectedRole)
 		return m_selected.at(index.row());
+    else if (role == HighlightRole)
+		return m_highlight.at(index.row());
 
 	return QVariant();
 }
@@ -35,6 +37,11 @@ bool CameraModel::setData(const QModelIndex & index, const QVariant & value, int
 		emit dataChanged(index, index, { SelectedRole });
 		return true;
 	}
+    if (role == HighlightRole) {
+        m_highlight[index.row()] = value.toBool();
+        emit dataChanged(index, index, { HighlightRole });
+        return true;
+    }
 	return false;
 }
 
@@ -47,6 +54,7 @@ QHash<int, QByteArray> CameraModel::roleNames() const {
 	QHash<int, QByteArray> roles;
 	roles[BufferRole] = "buffer";
 	roles[SelectedRole] = "selected";
+    roles[HighlightRole] = "highlight";
 	return roles;
 }
 
@@ -76,6 +84,8 @@ void CameraModel::initModel(int row, int col) {
 	fill(begin(m_selected), end(m_selected), false);
 	m_hasImage = vector<bool>(row * col);
 	fill(begin(m_hasImage), end(m_hasImage), false);
+    m_highlight = vector<bool>(row * col);
+    fill(begin(m_highlight), end(m_highlight), false);
 	m_buffer = vector<QImage>(row * col);
 	fill(begin(m_buffer), end(m_buffer), QImage(10, 10, QImage::Format_RGB888));
 	endInsertRows();
@@ -127,6 +137,20 @@ void CameraModel::select(const QPoint& target) {
 	m_selected[index] = true;
 	auto mi = createIndex(index, 0);
 	emit dataChanged(mi, mi, { SelectedRole });
+}
+
+void CameraModel::highlight(const QPoint &target) {
+    auto index = pointToIndex(target);
+    m_highlight[index] = true;
+    auto mi = createIndex(index, 0);
+    emit dataChanged(mi, mi, { HighlightRole });
+}
+
+void CameraModel::unhighlight() {
+    fill(begin(m_highlight), end(m_highlight), false);
+    auto tl = createIndex(0, 0);
+    auto br = createIndex(rowCount() - 1, 0);
+    emit dataChanged(tl, br, { HighlightRole });
 }
 
 QPoint CameraModel::indexToPoint(int index) const {

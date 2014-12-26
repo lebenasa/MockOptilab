@@ -5,8 +5,8 @@ import QuickCam 1.0
 
 ApplicationWindow {
     visible: true
-    width: 640
-    height: 480
+    width: 1280
+    height: 720
     title: qsTr("Hello World")
 
     menuBar: MenuBar {
@@ -28,7 +28,9 @@ ApplicationWindow {
     
     statusBar: StatusBar {
         RowLayout {
-            
+            Label {
+                text: "(%1x%2)".arg(stepper.x).arg(stepper.y)
+            }
         }
     }
     
@@ -37,8 +39,8 @@ ApplicationWindow {
         clip: true
         Rectangle {
             color: "#222"
-            width: (serialcapture.cellSize.width + 1) * cammodel.cols
-            height: (serialcapture.cellSize.height + 1) * cammodel.rows
+            width: serialcapture.cellSize.width * cammodel.cols
+            height: serialcapture.cellSize.height * cammodel.rows
             GridView {
                 id: cameraGrid
                 model: cammodel
@@ -48,12 +50,11 @@ ApplicationWindow {
                 cellHeight: serialcapture.cellSize.height
                 delegate: Rectangle {
                     id: delegateBorder
-                    property bool highlighted
                     width: cameraGrid.cellWidth
                     height: cameraGrid.cellHeight
                     color: "transparent"
                     border.width: 1
-                    border.color: selected ? "yellow" : highlighted ? "magenta" : "green"
+                    border.color: selected ? "yellow" : highlight ? "magenta" : "green"
                     CameraItem {
                         id: cameraDelegate
                         anchors.fill: parent
@@ -63,6 +64,20 @@ ApplicationWindow {
                         renderParams: CameraItem.ScaledToItem
                     }
                 }
+            }
+            MouseArea {
+                id: cameraMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                property int mousecount: 0
+                onPositionChanged: {
+                    if (mousecount === 15) {
+                       serialcapture.procHighlight(Qt.point(mouse.x, mouse.y))
+                       mousecount = 0
+                    }
+                    ++mousecount
+                }
+                onClicked: serialcapture.procSelect(Qt.point(mouse.x, mouse.y))
             }
         }
     }

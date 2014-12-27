@@ -179,26 +179,61 @@ int CameraModel::pointToIndex(const QPoint& point) const {
 }
 
 std::vector<QPoint> CameraModel::autoFill() const {
+    if (count(begin(m_hasImage), end(m_hasImage), true) < 2)
+        return vector<QPoint>();
 	// Find top-left and bottom-right filled cell
 	auto first_i = find(begin(m_hasImage), end(m_hasImage), true);
 	int first = distance(begin(m_hasImage), first_i);
 	auto last_i = find(rbegin(m_hasImage), rend(m_hasImage), true);
 	int last = distance(begin(m_hasImage), last_i.base());
-    // WRONG!!
-
-	// Calculate cells in the box
-	auto tl = indexToPoint(first);
-	auto br = indexToPoint(last);
-	std::vector<QPoint> res;
-	for (int y = tl.y(); y <= br.y(); ++y) {
+    int tly = indexToPoint(first).y();
+    int bry = indexToPoint(last).y();
+    int tlx = -1;
+    for (int x = 0; x < m_col; ++x) {
+        for (int y = 0; y < m_row; ++y) {
+            if (m_hasImage.at(pointToIndex(QPoint(x, y)))) {
+                tlx = x;
+                break;
+            }
+        }
+        if (tlx != -1)
+            break;
+    }
+    int brx = -1;
+    for (int x = m_col-1; x >= 0; --x) {
+        for (int y = 0; y < m_row; ++y) {
+            if (m_hasImage.at(pointToIndex(QPoint(x, y)))) {
+                brx = x;
+                break;
+            }
+        }
+        if (brx != -1)
+            break;
+    }
+    
+    QPoint tl { tlx, tly };
+    QPoint br { brx, bry };
+    
+    std::vector<QPoint> res, temp;
+    for (int y = tl.y(); y <= br.y(); ++y) {
 		for (int x = tl.x(); x <= br.x(); ++x) {
-			if (!m_hasImage[pointToIndex(QPoint(x, y))]) {
-				res.push_back(QPoint(x, y));
-			}
+			temp.push_back(QPoint(x, y));
 		}
 	}
-
-	return res;
+    int x = 0;
+    auto pred = [&](int a, int b) { 
+        return (find(begin(temp), end(temp), QPoint(a, b)) != end(temp)) & 
+                !m_hasImage.at(pointToIndex(QPoint(a, b)));
+    };
+    for (int y = 0; y < m_row; ++y) {
+        for (int i = 0; i < m_col; ++i) {
+            if (pred(x, y))
+                res.push_back(QPoint(x, y));
+            x = (y%2 == 0) ? x + 1 : x - 1;
+        }
+        x = (y%2 == 0) ? x - 1 : x + 1;
+    } 
+    return res;
 }
 
 std::vector<QPoint> CameraModel::boxFill() const {
@@ -206,18 +241,17 @@ std::vector<QPoint> CameraModel::boxFill() const {
     // thus we simply return selected cells with empty image
 	std::vector<QPoint> res;
     int x = 0;
-    auto pred = [this](int x, int y) { 
-        return m_selected.at(pointToIndex(QPoint(x,y))) & !m_hasImage.at(pointToIndex(QPoint(x,y))); 
+    auto pred = [this](int a, int b) { 
+        return m_selected.at(pointToIndex(QPoint(a,b))) & 
+                !m_hasImage.at(pointToIndex(QPoint(a,b))); 
     };
     for (int y = 0; y < m_row; ++y) {
         for (int i = 0; i < m_col; ++i) {
             if (pred(x, y))
                 res.push_back(QPoint(x, y));
-            if (y % 2 == 0)
-                ++x;
-            else
-                --x;
+            x = (y%2 == 0) ? x + 1 : x - 1;
         }
+        x = (y%2 == 0) ? x - 1 : x + 1;
     }
 	return res;
 }

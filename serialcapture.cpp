@@ -138,8 +138,24 @@ void SerialCapture::boxFill() {
     vector<QPointF> targets;
     for (const auto& t : ts)
         targets.push_back(m_interface->indexToCoord(t));
-    for (auto f = begin(targets); f != end(targets); ++f) {
-        m_stepper->addMoveToCommand(*f);
+    for (auto f : targets) {
+        m_stepper->addMoveToCommand(f);
+        m_stepper->addBlockCommand(100);
+    }
+    m_stepper->nextCommand();
+}
+
+void SerialCapture::autoFill() {
+    auto ts = m_model->autoFill();
+    if (ts.empty()) {
+        emit autoFillFailed();
+        return;
+    }
+    vector<QPointF> targets;
+    for (const auto& t : ts)
+        targets.push_back(m_interface->indexToCoord(t));
+    for (auto f : targets) {
+        m_stepper->addMoveToCommand(f);
         m_stepper->addBlockCommand(100);
     }
     m_stepper->nextCommand();

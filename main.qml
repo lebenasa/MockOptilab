@@ -30,6 +30,10 @@ ApplicationWindow {
                 onTriggered: serialcapture.boxFill()
                 enabled: (serialcapture.selectCounter > 1)
             }
+            MenuItem {
+                text: qsTr("Auto-Fill")
+                onTriggered: serialcapture.autoFill()
+            }
         }
     }
     

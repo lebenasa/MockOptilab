@@ -43,11 +43,13 @@ public slots:
     void endMultiSelect(const QPoint& pos);
     
     void boxFill();
+    void autoFill();
 
 signals:
 	void cellSizeChanged(const QSize &size);
 	void blockChanged(bool);
     void selectCounterChanged(int nv);
+    void autoFillFailed();
 
 private:
 	MockCamera* m_camera;

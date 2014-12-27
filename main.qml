@@ -76,7 +76,7 @@ ApplicationWindow {
                 hoverEnabled: true
                 property int mousecount: 0
                 onPositionChanged: {
-                    if (mousecount === 15) {
+                    if (mousecount === 10) {
                         if (pressed)
                             serialcapture.endMultiSelect(Qt.point(mouse.x, mouse.y))
                         else

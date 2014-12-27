@@ -205,9 +205,19 @@ std::vector<QPoint> CameraModel::boxFill() const {
     // Selection is already restricted to box area by UI,
     // thus we simply return selected cells with empty image
 	std::vector<QPoint> res;
-    for (size_t i = 0; i < m_selected.size(); ++i) {
-            if (m_selected.at(i) && !m_hasImage.at(i))
-                res.push_back(indexToPoint(i));
+    int x = 0;
+    auto pred = [this](int x, int y) { 
+        return m_selected.at(pointToIndex(QPoint(x,y))) & !m_hasImage.at(pointToIndex(QPoint(x,y))); 
+    };
+    for (int y = 0; y < m_row; ++y) {
+        for (int i = 0; i < m_col; ++i) {
+            if (pred(x, y))
+                res.push_back(QPoint(x, y));
+            if (y % 2 == 0)
+                ++x;
+            else
+                --x;
+        }
     }
 	return res;
 }
